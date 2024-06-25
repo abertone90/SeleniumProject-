@@ -7,6 +7,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class testSummaryOfAccounts {
     private WebDriver driver;
     private WebDriverWait wait;
@@ -42,6 +44,7 @@ public class testSummaryOfAccounts {
         Login();
         summaryOfAccounts.clickAccView();
         String resultado = summaryOfAccounts.msgAccountBalance();
+        assertEquals("*Balance includes deposits that may be subject to holds", resultado);
     }
     @AfterEach
     public void cerrar() {

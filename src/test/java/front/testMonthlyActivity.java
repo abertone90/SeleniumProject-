@@ -8,6 +8,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class testMonthlyActivity {
     private WebDriver driver;
     private WebDriverWait wait;
@@ -43,21 +45,19 @@ public class testMonthlyActivity {
         Login();
 
         String resultado = monthlyActivityPage.msgAccountBalance();
+        assertEquals("*Balance includes deposits that may be subject to holds", resultado);
         monthlyActivityPage.clickAccountNumber();
         String resultado2 = monthlyActivityPage.accDetailsMsg();
+        assertEquals("Account Details", resultado2);
         monthlyActivityPage.activityPeriod();
         monthlyActivityPage.activityType();
         monthlyActivityPage.clickGo();
-
-
-
-
     }
-    /*
+
     @AfterEach
     public void cerrar() {
         monthlyActivityPage.close();
-    }*/
+    }
     @AfterAll
     public static void saveReport() {
         System.out.println("<<< FINALIZAN LOS TEST Acc Activity >>>");

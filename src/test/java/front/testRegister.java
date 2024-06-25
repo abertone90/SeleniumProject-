@@ -43,7 +43,7 @@ public class testRegister {
         registerPage.putZipCode("12345");
         registerPage.putTelephone("12345789");
         registerPage.putSSN("123456789");
-        registerPage.putUserName("test");
+        registerPage.putUserName("test1");
 
         registerPage.putTelephone("12345789");
         registerPage.putPass("test");
@@ -51,6 +51,7 @@ public class testRegister {
         registerPage.clickRegistrarse();
 
         String resultado = registerPage.validaCuentaCreada();
+        Assertions.assertEquals("Your account was created successfully. You are now logged in.", resultado);
     }
 
     @AfterEach

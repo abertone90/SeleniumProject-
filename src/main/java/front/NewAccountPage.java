@@ -6,28 +6,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class NewAccountPage extends BasePage{
 
-
-    /** Customer Login*/
-    private  By userN = By.xpath("//input[@name='username']");
-    private  By password = By.xpath("//input[@name='password']");
-    private  By logIn =  By.xpath("//input[@value='Log In']");
     /** Customer Account*/
     private By newAcc = By.xpath("//a[normalize-space()='Open New Account']");
     private By openNewAcc= By.cssSelector("input[value='Open New Account']");
     private By accSuccessMessage = By.xpath("//p[normalize-space()='Congratulations, your account is now open.']");
 
-
-
-    /** Login met*/
-    public void putUserName(String user) throws InterruptedException {
-        this.type(userN, user);
-    }
-    public void putPass(String pass) throws InterruptedException {
-        this.type(password, pass);
-    }
-    public void clickLogIn() throws InterruptedException {
-        this.click(logIn);
-    }
     /** openAccount*/
     public void clickNewAccount() throws InterruptedException {
         this.click(newAcc);
@@ -43,9 +26,7 @@ public class NewAccountPage extends BasePage{
     public void setAccountConfirmed() throws InterruptedException {
         this.click(openNewAcc);
         Thread.sleep(1000);
-
     }
-
 
     /** Succes Msg*/
     public String succesMsgAcc() throws InterruptedException {

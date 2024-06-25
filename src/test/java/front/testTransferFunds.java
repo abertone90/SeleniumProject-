@@ -51,6 +51,7 @@ public class testTransferFunds {
 
         transferFundsPage.clickBtnTransfer();
         String resultado = transferFundsPage.transferText();
+        assertEquals("Transfer Funds", resultado);
         transferFundsPage.writeAmount("100");
         transferFundsPage.clickConfirmTransfer();
         String resultado2 = transferFundsPage.transferComplete();
