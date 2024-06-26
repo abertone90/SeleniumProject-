@@ -1,6 +1,8 @@
 package front;
 
 import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
@@ -11,11 +13,13 @@ import reportes.ReportFactory;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class testRegister {
     private WebDriver driver;
     private WebDriverWait wait;
     private RegisterPage registerPage;
-    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Test.html");
+    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Register-Test.html");
     static ExtentReports extent;
 
     @BeforeAll
@@ -42,6 +46,9 @@ public class testRegister {
     @Tag("FRONTEND")
     @Tag("EXITOSO")
     public void register() throws InterruptedException {
+        ExtentTest test = extent.createTest("Register");
+        test.log(Status.INFO, "Comienza el Test");
+
         registerPage.clickCreateAcc();
         registerPage.putName("jhon");
         registerPage.putLastName("test");
@@ -59,6 +66,8 @@ public class testRegister {
 
         String resultado = registerPage.validaCuentaCreada();
         Assertions.assertEquals("Your account was created successfully. You are now logged in.", resultado);
+
+        test.log(Status.PASS, "Se registro exitosamente");
     }
 
     @AfterEach
@@ -68,6 +77,7 @@ public class testRegister {
 
     @AfterAll
     public static void saveReport() {
+        extent.flush();
         System.out.println("<<< FINALIZAN LOS TEST DE REGISTRO >>>");
     }
 }

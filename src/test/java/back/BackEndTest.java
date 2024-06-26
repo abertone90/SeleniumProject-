@@ -9,7 +9,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import reportes.ReportFactory;
-
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -63,40 +62,103 @@ public class BackEndTest {
     @Test
     @Order(2)
     @Tag("POST")
-    public void testAbrirNuevaCuenta() {
+    public void  openNewAccount(){
+        System.out.println("Iniciando Primer Test Post");
         ExtentTest test = extent.createTest("POST - Abrir Nueva Cuenta");
         test.log(Status.INFO, "Comienza el Test");
 
-        // Construir el cuerpo de la solicitud
-        String requestBody = "{\n" +
-                "  \"customerId\": " + customerId + ",\n" +
-                "  \"type\": \"SAVINGS\",\n" +
-                "  \"balance\": 0\n" +
-                "}";
+        System.out.println("Iniciando Primer Test Post");
+        test.log(Status.INFO, "Iniciando Primer Test Post");
+        int newAccountType = 1;
 
-        // Imprimir el cuerpo de la solicitud para depuración
-        System.out.println("Request Body: " + requestBody);
+        JsonObject request = new JsonObject();
+        request.addProperty("customerId", customerId);
+        request.addProperty("type", "SAVINGS");
+        request.addProperty("balance", 0);
 
-        // Enviar la solicitud con RestAssured
         Response response = given()
                 .auth().basic(username, password)
                 .contentType("application/json")
-                .body(requestBody)
-                .post("https://parabank.parasoft.com/parabank/services_proxy/bank/createAccount?newAccountType=1&fromAccountId=" + fromAccountId);
+                .body(request.toString())
+                .post("https://parabank.parasoft.com/parabank/services_proxy/bank/createAccount?customerId=" + customerId + "&newAccountType=" + newAccountType + "&fromAccountId=" + fromAccountId);
+
+// Para depuración: imprimir los detalles de la respuesta
+        System.out.println("Response Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getBody().asString());
+        response.then().statusCode(200);
+
+        System.out.println("Primer Test Post finalizado");
+        test.log(Status.PASS, "Primer Test Post finalizado");
+    }
+
+    @Test
+    @Order(3)
+    @Tag("POST")
+    public void fundsDownloader() {
+        System.out.println("Iniciando Test de Descargar Fondos");
+        ExtentTest test = extent.createTest("POST - Descargar Fondos");
+        test.log(Status.INFO, "Comienza el Test");
+        test.log(Status.INFO, "Iniciando test Descargar Fondos tipo POST");
+
+        // Datos de autenticación básica
+        String endpoint = "https://parabank.parasoft.com/parabank/services_proxy/bank/transfer";
+        int amount = 500;
+
+        // Enviar la solicitud de transferencia con RestAssured
+        Response response = given()
+                .auth().basic(username, password)
+                .post(endpoint + "?fromAccountId=" + fromAccountId + "&toAccountId=" + toAccountId + "&amount=" + amount);
+
+        test.log(Status.INFO, "Intentando hacer POST a la URL: " + endpoint);
 
         // Imprimir los detalles de la respuesta para depuración
-        test.log(Status.INFO, "Intentando hacer POST a la URL https://parabank.parasoft.com/parabank/services_proxy/bank/createAccount");
-
         System.out.println("Response Status Code: " + response.getStatusCode());
         System.out.println("Response Body: " + response.getBody().asString());
 
         // Validar el código de estado esperado
-        assertEquals(200, response.getStatusCode(), "El status code debería ser 200");
+        assertEquals(200, response.getStatusCode(), "Error: El código de estado no es 200");
 
-        test.log(Status.PASS, "POST - Abrir Nueva Cuenta finalizado");
+        System.out.println("Test de Descargar Fondos finalizado");
+        test.log(Status.PASS, "POST - Descargar Fondos finalizado");
+    }
+    @Test
+    @Order(4)
+    @Tag("GET")
+    public void testAccountActivity() {
+        int fromAccountId = 24111;
+        System.out.println("Iniciando Test de Actividad de Cuenta");
+        String url = "https://parabank.parasoft.com/parabank/services_proxy/bank/accounts/" + fromAccountId + "/activity";
+
+        ExtentTest test = extent.createTest("GET - Account Activity");
+        test.log(Status.INFO, "Comienza el test");
+        test.log(Status.INFO, "Iniciando ultimo test GET");
+
+
+        Response response = given()
+                .auth().basic(username, password)
+                .get(url);
+
+        // Print response details for debugging
+        System.out.println("Request URL: " + url);
+        System.out.println("Response Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getBody().asString());
+
+        // Validate expected status code
+        assertEquals(200, response.getStatusCode(), "Error: Status no es 200");
+
+        // Print test completion message
+        System.out.println("Account Activity Test completed");
+
+        // Mark test as passed in Extent report
+        test.log(Status.PASS, "GET - Account Activity completed");
     }
 
-
+    @AfterAll
+    public static void saveReport() {
+        // Finalize and save the Extent report
+        extent.flush();
+        System.out.println("<<< BACKEND TESTS FINISHED >>>");
+    }
 
 }
 

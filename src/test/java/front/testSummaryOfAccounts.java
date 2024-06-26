@@ -1,6 +1,8 @@
 package front;
 
 import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
@@ -20,7 +22,7 @@ public class testSummaryOfAccounts {
     private String username = "test";
     private String password = "test";
 
-    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Test.html");
+    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Summary-Test.html");
     static ExtentReports extent;
 
     @BeforeAll
@@ -40,28 +42,38 @@ public class testSummaryOfAccounts {
         summaryOfAccounts.setup();
         summaryOfAccounts.getUrl("https://parabank.parasoft.com/parabank/index.htm");
     }
-    public void Login() throws InterruptedException {
+
+    public void login() throws InterruptedException {
         NewAccountPage newAccountPage = new NewAccountPage(driver, wait);
         newAccountPage.putUserName(username);
         newAccountPage.putPass(password);
         newAccountPage.clickLogIn();
     }
+
     @Test
     @Tag("SummaryOfAccountsView")
     @Tag("FRONTEND")
     @Tag("EXITOSO")
     public void accountSumary() throws InterruptedException {
-        Login();
+        ExtentTest test = extent.createTest("Summary of Accounts Test");
+        test.log(Status.INFO, "Comienza el Test");
+
+        login();
         summaryOfAccounts.clickAccView();
         String resultado = summaryOfAccounts.msgAccountBalance();
         assertEquals("*Balance includes deposits that may be subject to holds", resultado);
+
+        test.log(Status.PASS, "Verificación de saldo exitosa");
     }
+
     @AfterEach
     public void cerrar() {
         summaryOfAccounts.close();
     }
+
     @AfterAll
     public static void saveReport() {
+        extent.flush();
         System.out.println("<<< FINALIZAN LOS TEST DE Vista de Resumen >>>");
     }
 }

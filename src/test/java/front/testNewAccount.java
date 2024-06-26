@@ -8,6 +8,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import reportes.ReportFactory;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 
 import java.time.Duration;
 
@@ -20,7 +22,7 @@ public class testNewAccount {
     private String username = "test";
     private String password = "test";
 
-    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Test.html");
+    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-NewAccount-Test.html");
     static ExtentReports extent;
 
 
@@ -42,6 +44,7 @@ public class testNewAccount {
         newAccountPage.getUrl("https://parabank.parasoft.com/parabank/index.htm");
     }
     public void Login() throws InterruptedException {
+
         NewAccountPage newAccountPage = new NewAccountPage(driver, wait);
         newAccountPage.putUserName(username);
         newAccountPage.putPass(password);
@@ -52,6 +55,9 @@ public class testNewAccount {
     @Tag("FRONTEND")
     @Tag("EXITOSO")
     public void newAccount() throws InterruptedException {
+        ExtentTest test = extent.createTest("New Account");
+        test.log(Status.INFO, "Comienza el Test");
+
       Login();
         newAccountPage.clickNewAccount();
         newAccountPage.accountType();
@@ -59,6 +65,8 @@ public class testNewAccount {
         newAccountPage.setAccountConfirmed();
         String resultado = newAccountPage.succesMsgAcc();
         assertEquals("Congratulations, your account is now open.", resultado);
+        test.log(Status.PASS, "Se registro exitosamente");
+
     }
     @AfterEach
     public void cerrar() {
@@ -66,6 +74,7 @@ public class testNewAccount {
     }
     @AfterAll
     public static void saveReport() {
+        extent.flush();
         System.out.println("<<< FINALIZAN LOS TEST DE Login y Creaccion de Cuenta >>>");
     }
 }
