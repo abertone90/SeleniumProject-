@@ -1,10 +1,13 @@
 package front;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import reportes.ReportFactory;
 
 import java.time.Duration;
 
@@ -17,8 +20,15 @@ public class testNewAccount {
     private String username = "test";
     private String password = "test";
 
+    static ExtentSparkReporter info = new ExtentSparkReporter("reportes/FrontEnd-Test.html");
+    static ExtentReports extent;
+
+
+
     @BeforeAll
     public static void createReport() {
+        extent = ReportFactory.getInstance();
+        extent.attachReporter(info);
         System.out.println("<<< COMIENZAN LOS TEST DE LOGIN >>>");
     }
     @BeforeEach
@@ -38,7 +48,8 @@ public class testNewAccount {
         newAccountPage.clickLogIn();
     }
     @Test
-    @Tag("REGISTRO")
+    @Tag("NewAccount")
+    @Tag("FRONTEND")
     @Tag("EXITOSO")
     public void newAccount() throws InterruptedException {
       Login();
